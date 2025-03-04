@@ -1,0 +1,126 @@
+[
+  {
+    "title": "Select",
+    "description": "Allows selecting the PIV application",
+    "command": {
+      "cla": 0,
+      "ins": 164,
+      "p1": 4,
+      "p2": 0,
+      "data": "A000000308000010000100"
+    },
+    "response": {
+      "data": "61284F0BA00000030800001000010079074F05A0000003085010484944204170706C6574732076342E30",
+      "status": "9000"
+    }
+  },
+  {
+    "title": "Read Buffer",
+    "description": "Reads data from the PIV application",
+    "command": {
+      "cla": 0,
+      "ins": 203,
+      "p1": 63,
+      "p2": 255,
+      "data": {
+        "5C": "5FC102"
+      },
+      "le": 0
+    },
+    "response": {
+      "structure": {
+        "53": {
+          "Label": "Binary contents"
+        }
+      },
+      "data": "531000112233445566778899AABBCCDDEEFF",
+      "status": "9000"
+    }
+  },
+  {
+    "title": "General Authenticate",
+    "description": "Uses cryptographic keys to perform some sort of authentication",
+    "command": {
+      "cla": 0,
+      "ins": 135,
+      "p1": 0,
+      "p2": 0,
+      "data": {
+        "7C": {
+          "81": "1122334455667788",
+          "82": "000102030405060708090A0B0C0D0E0F"
+        }
+      },
+      "le": 0
+    },
+    "response": {
+      "data": "112233445566778899AABBCCDDEEFF",
+      "status": "9000"
+    }
+  },
+  {
+    "title": "Get PIV Properties",
+    "description": "Reads the PIV application properties",
+    "command": {
+      "cla": 128,
+      "ins": 86,
+      "p1": 0,
+      "p2": 0,
+      "le": 0
+    },
+    "response": {
+      "structure": {
+        "01": {
+          "Length": 6,
+          "Label": "Applet version"
+        },
+        "39": {
+          "Length": 1,
+          "Label": "Applet mode"
+        },
+        "40": {
+          "Length": 2,
+          "Label": "Max objects"
+        },
+        "3A": {
+          "Length": 7,
+          "Label": "ACApplet AID"
+        },
+        "50": {
+          "47": {
+            "Length": 3,
+            "Label": "Object identifier"
+          },
+          "42": {
+            "Length": 2,
+            "Label": "Object size"
+          },
+          "4D": {
+            "Length": 6,
+            "Label": "Access conditions"
+          },
+          "Repeats": true,
+          "Optional": true
+        },
+        "51": {
+          "48": {
+            "Length": 1,
+            "Label": "Key identifier"
+          },
+          "43": {
+            "Length": 5,
+            "Label": "Key information"
+          },
+          "4D": {
+            "Length": 6,
+            "Label": "Access conditions"
+          },
+          "Repeats": true,
+          "Optional": true
+        }
+      },
+      "data": "0106210400000127390105400241293A07A0000000791000501147035FC1024202003D4D067701A500A500501147035FC107420200344D067701A500A500501147035FC1514202000C4D067701A500A500501147035FC105420204624D067701A500A500511248019A430507200100334D06770166016601",
+      "status": "9000"
+    }
+  }
+]

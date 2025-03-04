@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protocol Reference</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Protocol Reference</h1>
+  </header>
+  
+  <div class="container">
+    <aside class="sidebar">
+      <ul id="commandList" class="command-list">
+        <!-- Commands will be loaded here -->
+      </ul>
+    </aside>
+    
+    <main class="content">
+      <div id="placeholder" class="placeholder">
+        <p>Select a command from the sidebar to view details</p>
+      </div>
+      
+      <div id="commandDetails" class="command-details hidden">
+        <h1 id="commandTitle"></h1>
+        <div id="commandDescription" class="description"></div>
+        
+        <div class="section">
+          <h2 class="section-title">Command</h2>
+          <table id="commandTable">
+            <thead>
+              <tr>
+                <th>CLA</th>
+                <th>INS</th>
+                <th>P1</th>
+                <th>P2</th>
+                <th id="lcHeader" class="optional-header hidden">Lc</th>
+                <th id="dataHeader" class="optional-header hidden">Data</th>
+                <th id="leHeader">Le</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="commandBytes">
+                <!-- Command bytes will be placed here -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="section">
+          <h2 class="section-title">Response</h2>
+          <table id="responseTable">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="responseBytes">
+                <td class="data-cell left-align" id="responseData"></td>
+                <td class="data-cell" id="responseStatus"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div id="notesSection" class="section hidden">
+          <h2 class="section-title">Notes</h2>
+          <div id="commandNotes" class="notes"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
