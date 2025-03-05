@@ -150,7 +150,9 @@ function parseAndFormatResponse(data, structure) {
     if (!tagId) {
       // No matching tag found, handle unparsed data
       const remaining = data.substr(position);
-      result += `<div class="tlv-unparsed"><span class="tlv-value">${remaining}</span> (unparsed)</div>`;
+      if (remaining.length > 0) {
+        result += `<div class="tlv-unparsed"><span class="tlv-value">${remaining}</span> (unparsed)</div>`;
+      }
       break;
     }
     
@@ -180,11 +182,6 @@ function parseAndFormatResponse(data, structure) {
     const lengthHex = data.substr(position, lengthBytes * 2);
     position += lengthBytes * 2;
     
-    // Check if expected length matches (if specified)
-    if (tagConfig.Length !== undefined && lengthValue !== tagConfig.Length) {
-      console.warn(`Length mismatch for tag ${tagId}: expected ${tagConfig.Length}, got ${lengthValue}`);
-    }
-    
     // Extract value
     const valueHex = data.substr(position, lengthValue * 2);
     position += lengthValue * 2;
@@ -194,16 +191,14 @@ function parseAndFormatResponse(data, structure) {
     
     // Format the output
     result += `<div class="tlv-container">
-      <span class="tlv-tag">${tagId}</span><span class="tlv-length">${lengthHex}</span>`;
+      <span class="tlv-tag tooltip">${tagId}${tagConfig.Label ? labelTooltip : ''}</span><span class="tlv-length">${lengthHex}</span>`;
     
     // If this tag has nested structure, recursively parse its value
     if (hasNestedStructure(tagConfig)) {
-      // This is a constructed tag with nested structure
       const nestedStructure = getNestedStructure(tagConfig);
       const nestedResult = parseNestedTlv(valueHex, nestedStructure);
       result += `<div class="tlv-indent">${nestedResult}</div>`;
     } else {
-      // Simple value
       result += `<span class="tlv-value tooltip">${valueHex}${labelTooltip}</span>`;
     }
     
@@ -218,7 +213,7 @@ function findMatchingTag(dataFragment, structure) {
   // Try each tag defined in the structure to see if it matches at the current position
   for (const tagId in structure) {
     // Skip special properties
-    if (tagId === 'Repeats' || tagId === 'Optional') continue;
+    if (['Repeats', 'Optional', 'Length', 'Label'].includes(tagId)) continue;
     
     // Check if the data starts with this tag
     if (dataFragment.startsWith(tagId)) {
@@ -232,7 +227,8 @@ function findMatchingTag(dataFragment, structure) {
 // Helper function to check if a tag config has nested structure
 function hasNestedStructure(tagConfig) {
   return Object.keys(tagConfig).some(key => 
-    typeof tagConfig[key] === 'object' && !['Repeats', 'Optional'].includes(key)
+    typeof tagConfig[key] === 'object' && 
+    !['Repeats', 'Optional', 'Length', 'Label'].includes(key)
   );
 }
 
@@ -241,14 +237,11 @@ function getNestedStructure(tagConfig) {
   const nestedStructure = {};
   
   for (const key in tagConfig) {
-    if (typeof tagConfig[key] === 'object' && !['Repeats', 'Optional'].includes(key)) {
+    if (typeof tagConfig[key] === 'object' && 
+        !['Repeats', 'Optional', 'Length', 'Label'].includes(key)) {
       nestedStructure[key] = tagConfig[key];
     }
   }
-  
-  // Copy Repeats and Optional flags if they exist
-  if (tagConfig.Repeats) nestedStructure.Repeats = true;
-  if (tagConfig.Optional) nestedStructure.Optional = true;
   
   return nestedStructure;
 }
@@ -301,7 +294,7 @@ function parseNestedTlv(data, structure) {
     
     // Format the output
     result += `<div class="tlv-container">
-      <span class="tlv-tag">${tagId}</span><span class="tlv-length">${lengthHex}</span>`;
+      <span class="tlv-tag tooltip">${tagId}${tagConfig.Label ? labelTooltip : ''}</span><span class="tlv-length">${lengthHex}</span>`;
     
     // Handle nested structure
     if (hasNestedStructure(tagConfig)) {
@@ -314,16 +307,10 @@ function parseNestedTlv(data, structure) {
     
     result += `</div>`;
     
-    // Check if the tag repeats and we have another instance
+    // Check for repeating tags
     if (tagConfig.Repeats && position < data.length && data.substr(position, tagId.length) === tagId) {
-      // We'll continue in the next loop iteration to process the repeated tag
-    } else if (structure.Repeats) {
-      // If we're in a repeating structure, keep looking for other tags
+      // We'll continue in the next loop iteration for the repeated tag
       continue;
-    } else {
-      // If we're not in a repeating structure and there are no more of this tag,
-      // we're done with this structure
-      break;
     }
   }
   

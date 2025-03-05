@@ -183,7 +183,8 @@ th {
 .tooltip {
   position: relative;
   display: inline-block;
-  border-bottom: 1px dotted black;
+  border-bottom: 1px dotted #666;
+  cursor: help;
 }
 
 .tooltip .tooltiptext {
@@ -192,27 +193,32 @@ th {
   min-width: 120px;
   max-width: 250px;
   white-space: nowrap;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.8);
   color: #fff;
   text-align: center;
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 5px 10px;
   position: absolute;
   z-index: 1;
-  top: -5px;
-  left: 110%;
+  bottom: 125%;  /* Position above the element */
+  left: 50%;
+  margin-left: -60px; /* Center the tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 .tooltip .tooltiptext::after {
   content: "";
   position: absolute;
-  top: 50%;
-  right: 100%;
-  margin-top: -5px;
+  top: 100%;  /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: transparent black transparent transparent;
+  border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
 }
+
 .tooltip:hover .tooltiptext {
   visibility: visible;
+  opacity: 1;
 }

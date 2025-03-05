@@ -10,6 +10,24 @@
       "data": "A000000308000010000100"
     },
     "response": {
+      "structure": {
+        "61": {
+          "4F": {
+            "Length": 15,
+            "Label": "Application Identifier"
+          },
+          "79": {
+            "4F": {
+              "Length": 7,
+              "Label": "Registration Authority"
+            }
+          },
+          "50": {
+            "Length": 2,
+            "Label": "Application label"
+          }
+        }
+      },
       "data": "61284F0BA00000030800001000010079074F05A0000003085010484944204170706C6574732076342E30",
       "status": "9000"
     }
